@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="memberMapper">
+   
    <select id="selectMember" resultType="edu.human.com.member.service.EmployerInfoVO">
       SELECT * FROM lettnemplyrinfo
    </select>
@@ -47,11 +48,16 @@
           EMAIL_ADRES = #{EMAIL_ADRES},
           GROUP_ID = #{GROUP_ID},
           ORGNZT_ID = #{ORGNZT_ID},
-          EMPLYR_STTUS_CODE = #{EMPLYR_STTUS}
+          EMPLYR_STTUS_CODE = #{EMPLYR_STTUS_CODE}
       WHERE
           EMPLYR_ID = #{EMPLYR_ID}
    </update>
    <delete id="deleteMember">
       delete from lettnemplyrinfo where EMPLYR_ID = #{EMPLYR_ID}
    </delete>
+                             <!-- resultType을 써줘야지 get,set을 받고 줄 수있다. -->
+   <select id="viewMember" resultType="edu.human.com.member.service.EmployerInfoVO">
+      select * from lettnemplyrinfo where EMPLYR_ID = #{EMPLYR_ID}
+   </select>
+   
 </mapper>
