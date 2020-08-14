@@ -59,5 +59,8 @@
    <select id="viewMember" resultType="edu.human.com.member.service.EmployerInfoVO">
       select * from lettnemplyrinfo where EMPLYR_ID = #{EMPLYR_ID}
    </select>
+   <select id="selectAuth" resultType="edu.human.com.member.service.AuthVO" >
+     select * from lettnauthorgroupinfo
+   </select>
    
 </mapper>
