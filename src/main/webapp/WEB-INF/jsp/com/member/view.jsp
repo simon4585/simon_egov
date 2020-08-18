@@ -38,93 +38,105 @@
                             <li><strong>관리자관리</strong></li>
                         </ul>
                     </div>
+                    
                 </div>
-                   <!-- form:form 쓰는 이유 보안 -->
-                   <form:form commandName="viewForm" name="viewForm" method="get">
+
+                <form:form commandName="viewForm" name="viewForm" method="get">
+                
                     <div class="modify_user" >
                         <table >
                      <tr> 
                        <th width="20%" height="23" class="required_text" nowrap >
-                             사용자 아이디
+                       사용자 아이디
                        </th>
                        <td width="80%" nowrap="nowrap">
                          <c:out value="${memberVO.EMPLYR_ID}"></c:out>
                          <input id="EMPLYR_ID" name="EMPLYR_ID" type="hidden" value="${memberVO.EMPLYR_ID}"/>
                        </td>
                      </tr>
+                     
                       <tr> 
                        <th width="20%" height="23" class="required_text" nowrap >
-                             사용자 이름
+                       사용자 이름
                        </th>
                        <td width="80%" nowrap="nowrap">
                          <c:out value="${memberVO.USER_NM}"></c:out>
                        </td>
                      </tr>
-                      <tr> 
+                     
+                     <tr> 
                        <th width="20%" height="23" class="required_text" nowrap >
-                             우편번호
+                       우편번호
                        </th>
                        <td width="80%" nowrap="nowrap">
                          <c:out value="${memberVO.ZIP}"></c:out>
                        </td>
                      </tr>
-                      <tr> 
+                     
+                     <tr> 
                        <th width="20%" height="23" class="required_text" nowrap >
-                             집주소
+                       집주소
                        </th>
                        <td width="80%" nowrap="nowrap">
                          <c:out value="${memberVO.HOUSE_ADRES}"></c:out>
                        </td>
                      </tr>
-                      <tr> 
+                     
+                     <tr> 
                        <th width="20%" height="23" class="required_text" nowrap >
-                             이메일
+                       이메일
                        </th>
                        <td width="80%" nowrap="nowrap">
                          <c:out value="${memberVO.EMAIL_ADRES}"></c:out>
                        </td>
                      </tr>
-                      <tr> 
+                     
+                     <tr> 
                        <th width="20%" height="23" class="required_text" nowrap >
-                             권한레벨
+                       권한레벨
                        </th>
                        <td width="80%" nowrap="nowrap">
                          <select name="GROUP_ID">
                          <c:forEach var="auth" items="${authVO}">
+                         <option value="${auth.GROUP_ID}"
                          <c:if test="${auth.GROUP_ID == memberVO.GROUP_ID}">selected="selected"</c:if>
-                         <option value="${auth.GROUP_ID}">${auth.GROUP_NM}</option>
-                         </c:forEach>
+                         >
+                         ${auth.GROUP_NM}</option>
+                         </c:forEach>          
                          </select>
                        </td>
                      </tr>
-                      <tr> 
+                     
+                     <tr> 
                        <th width="20%" height="23" class="required_text" nowrap >
-                             소속기관
+                       소속기관
                        </th>
                        <td width="80%" nowrap="nowrap">
                          <c:out value="${memberVO.ORGNZT_ID}"></c:out>
                        </td>
                      </tr>
-                      <tr> 
+                     
+                     <tr> 
                        <th width="20%" height="23" class="required_text" nowrap >
-                            휴면계정여부
+                       휴면계정여부
                        </th>
                        <td width="80%" nowrap="nowrap">
                          <c:out value="${memberVO.EMPLYR_STTUS_CODE}"></c:out>
                        </td>
                      </tr>
-                      <tr> 
+                     
+                     <tr> 
                        <th width="20%" height="23" class="required_text" nowrap >
-                            등록일
+                       등록일
                        </th>
                        <td width="80%" nowrap="nowrap">
-                         <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${memberVO.SBSCRB_DE}" />
+                        <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${memberVO.SBSCRB_DE}" />
                        </td>
                      </tr>
-                                          
+                     
                         </table>
                     </div>
-                    
+                   
                    <!-- 버튼 시작(상세지정 style로 div에 지정) -->
                     <div class="buttons" style="padding-top:10px;padding-bottom:10px;">
                       <!-- 목록/저장버튼  -->
@@ -136,16 +148,25 @@
                               </a>
                           </td>
                           <td width="10"></td>
+                          
                           <td>
-                              <a href="<c:url value='/cop/member/selectMember.do'/>">
+                              <a href="#LINK" id="delete_member">
+                              <spring:message code="button.delete" />
+                              </a>
+                          </td>
+                          <td width="10"></td>
+                          
+                          <td>
+                              <a href="<c:url value='/com/member/selectMember.do'/>">
                               <spring:message code="button.list" />
                               </a>
-                          </td>                          
+                          </td>
+                          
                         </tr>
                       </table>
                     </div>
-                    <!-- 버튼 끝 -->     
-                    </form:form>    
+                    <!-- 버튼 끝 -->
+                  </form:form>       
          </div>
             <!-- //content 끝 -->    
         </div>  
@@ -161,11 +182,22 @@
 <script>
 $(document).ready(function(){
    
-	$("#update_member").click(function(){
-		$("#updateForm").attr("action","<c:url value='/com/member/updateMember.do'/>")
-		$("#updateForm").submit();
-	});
+   $("#delete_member").click(function(){
+	   if(confirm("정말로 삭제 하시겠습니까?")){
+		   
+	   }else{
+		   return false;
+	   }
+      $("#viewForm").attr("action", "<c:url value='/com/member/deleteMember.do'/>");
+      $("#viewForm").attr("method", "post");
+      $("#viewForm").submit();
    });
+   $("#update_member").click(function(){
+      $("#viewForm").attr("action", "<c:url value='/com/member/updateMember.do'/>");
+      $("#viewForm").submit();
+   });
+});
 </script>
+
  </body>
 </html>
