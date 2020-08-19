@@ -131,7 +131,7 @@
                        </th>
                        <td width="80%" nowrap="nowrap">
                           
-                          <input name="ORGNZT_ID" type="text" value="" />
+                          <input name="ORGNZT_ID" type="text" value="ORGNZT_0000000000000" />
                        </td>
                      </tr>
                      
