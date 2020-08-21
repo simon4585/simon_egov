@@ -224,7 +224,8 @@ $(document).ready(function(){
          $("#PASSWORD_CNSR").focus();
          return;
       }
-      $("#insertForm").attr("action", "<c:url value='/com/member/insertMember.do'/>");
+      $("#insertForm").attr("action", "<c:url value='/com/member/insertMember.do'/>"); 
+      //컨트롤러와 매핑이 되는 부분 205번줄.
       $("#insertForm").submit();
    });
    

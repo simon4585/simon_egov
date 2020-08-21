@@ -27,31 +27,125 @@ public class MemberController {
    private AuthDAO authDAO;
    
    /**
-   관리자관리 중복 아이디 체크 GET. 200817
-   @ResponseBody 애노테이션은 RestAPI 방식에서 데이터만 리턴한다.
+   AdminLTE용 관리자관리 삭제POST. 200821
   */
-  @RequestMapping(value = "/com/member/restViewMember.do", method = RequestMethod.GET)
-  @ResponseBody
-  public int idCheckMember(@RequestParam("EMPLYR_ID") String emplyr_id, Model model) throws Exception {
-     int result = 0;
-     //뷰 멤버 쿼리를 실행해서 결과가 존재하면 (아이디가 존재하면) result 변수에 1을 입력(아래).
-     if(memberService.viewMember(emplyr_id) != null) {
-        result = 1;
-     }
-     return result;
-  }
-   
-   /**
-   관리자관리 삭제 POST. 200817
-  */
-  @RequestMapping(value = "/com/member/deleteMember.do", method = RequestMethod.POST)
-  public String deleteMember(@RequestParam("EMPLYR_ID") String emplyr_id, Model model) throws Exception {
+  @RequestMapping(value = "/admin/member/deleteMember.do", method = RequestMethod.POST)
+  public String adminDeleteMember(@RequestParam("EMPLYR_ID") String emplyr_id, Model model) throws Exception {
      memberService.deleteMember(emplyr_id);
-     return "redirect:/com/member/selectMember.do";
+     return "redirect:/admin/member/selectMember.do";
   }
    
    /**
-    관리자관리 입력 POST. 200817
+   AdminLTE용 관리자관리 입력POST. 200821
+   */
+   @RequestMapping(value = "/admin/member/insertMember.do", method = RequestMethod.POST)
+   public String adminInsertMember(EmployerInfoVO vo, Model model) throws Exception {
+      // 1. 입력한 비밀번호를 암호화한다.
+      String enpassword = EgovFileScrty.encryptPassword(vo.getPASSWORD(), vo.getEMPLYR_ID());
+      vo.setPASSWORD(enpassword);
+      memberService.insertMember(vo);
+      return "redirect:/admin/member/selectMember.do";
+   }
+   
+   
+   /**
+    AdminLTE용 관리자관리 입력GET. 200821
+   */
+   @RequestMapping(value = "/admin/member/insertMember.do", method = RequestMethod.GET)
+   public String adminInsertMember(Model model) throws Exception {
+      List<AuthVO> authVO = authDAO.selectAuth();
+      model.addAttribute("authVO", authVO);
+      return "admin/member/insert";
+   }
+   
+   
+   /**
+    AdminLTE용 관리자관리 수정POST. 200821
+   */
+   @RequestMapping(value = "/admin/member/updateMember.do", method = RequestMethod.POST)
+   public String adminUpdateMember(EmployerInfoVO vo, Model model) throws Exception {
+      //패스워드 암호화 처리
+      if(vo.getPASSWORD() !="") {
+         // 1. 입력한 비밀번호를 암호화한다.
+         String enpassword = EgovFileScrty.encryptPassword(vo.getPASSWORD(), vo.getEMPLYR_ID());
+         vo.setPASSWORD(enpassword);
+      }
+      memberService.updateMember(vo);
+      return "redirect:/admin/member/viewMember.do?EMPLYR_ID=" + vo.getEMPLYR_ID();
+   }
+   
+   
+   /**
+    AdminLTE용 관리자관리 수정GET.200821
+   */
+   @RequestMapping(value = "/admin/member/updateMember.do", method = RequestMethod.GET)
+   public String adminUpdateMember(@RequestParam("EMPLYR_ID") String EMPLYR_ID, Model model) throws Exception {
+      EmployerInfoVO vo = memberService.viewMember(EMPLYR_ID); //업데이트 딜리트시에만 필요
+      model.addAttribute("memberVO", vo);
+      List<AuthVO> authVO = authDAO.selectAuth();
+      model.addAttribute("authVO", authVO);
+      return "admin/member/update";
+   }
+   
+   
+   /**
+    AdminLTE용 관리자관리 상세보기.200821
+   */
+   @RequestMapping(value = "/admin/member/viewMember.do", method = RequestMethod.GET)
+   public String adminViewMember(@RequestParam("EMPLYR_ID") String EMPLYR_ID, Model model) throws Exception {
+      EmployerInfoVO vo = memberService.viewMember(EMPLYR_ID); 
+      model.addAttribute("memberVO", vo);
+      List<AuthVO> authVO = authDAO.selectAuth();
+      model.addAttribute("authVO", authVO);
+      return "admin/member/view";
+   }
+
+   
+   /**
+    AdminLTE용 관리자홈 .200820
+   */
+   @RequestMapping("/admin/home.do")
+   public String adminHome() throws Exception {
+      return "admin/home";
+   }
+   
+   /**
+    AdminLTE용 관리자관리 목록을 조회한다.200820
+   */
+   @RequestMapping("/admin/member/selectMember.do")
+   public String adminMember(Model model) throws Exception {
+      List<EmployerInfoVO> memberList = memberService.selectMember();
+      model.addAttribute("memberList", memberList);
+      return "admin/member/list";
+   }
+   
+   /**
+    관리자관리 중복ID체크 GET. 200817
+    @ResponseBody애노테이션은 RestAPI방식에서 데이터만 리턴한다
+   */
+   
+   @RequestMapping(value = "/com/member/restViewMember.do", method = RequestMethod.GET)
+   @ResponseBody
+   public int idCheckMember(@RequestParam("EMPLYR_ID") String emplyr_id, Model model) throws Exception {
+      int result = 0;
+      //뷰멤버 쿼리를 실행해서 결과가 존재하면 result 변수에 1을 입력한다(아래) 그렇지 않으면 건너뛰어서 0.
+      if(memberService.viewMember(emplyr_id) != null) {
+         result = 1;
+      }
+      return result;
+   }
+   
+   /**
+    관리자관리 삭제POST. 200817
+   */
+   @RequestMapping(value = "/com/member/deleteMember.do", method = RequestMethod.POST)
+   public String deleteMember(@RequestParam("EMPLYR_ID") String emplyr_id, Model model) throws Exception {
+      memberService.deleteMember(emplyr_id);
+      return "redirect:/com/member/selectMember.do";
+   }
+   
+   /**
+    관리자관리 입력POST. 200817
    */
    @RequestMapping(value = "/com/member/insertMember.do", method = RequestMethod.POST)
    public String insertMember(EmployerInfoVO vo, Model model) throws Exception {
@@ -62,8 +156,9 @@ public class MemberController {
       return "redirect:/com/member/selectMember.do";
    }
    
+   
    /**
-    관리자관리 입력 GET. 200817
+    관리자관리 입력GET. 200817
    */
    @RequestMapping(value = "/com/member/insertMember.do", method = RequestMethod.GET)
    public String insertMember(Model model) throws Exception {
@@ -74,7 +169,7 @@ public class MemberController {
    
    
    /**
-    관리자관리 수정 POST. 200817
+    관리자관리 수정POST. 200817
    */
    @RequestMapping(value = "/com/member/updateMember.do", method = RequestMethod.POST)
    public String updateMember(EmployerInfoVO vo, Model model) throws Exception {
@@ -90,7 +185,7 @@ public class MemberController {
    
    
    /**
-    관리자관리 수정 GET. 200814
+    관리자관리 수정GET. 200814
    */
    @RequestMapping(value = "/com/member/updateMember.do", method = RequestMethod.GET)
    public String updateMember(@RequestParam("EMPLYR_ID") String EMPLYR_ID, Model model) throws Exception {
